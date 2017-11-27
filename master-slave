@@ -112,4 +112,17 @@
    |    1 | bobu |
    +------+------+
    1 row in set (0.00 sec)
+   
+   
+不能同步到从库，但又查不到原因，可以尝试一下操作   
+mysql> stop slave;
+set global sql_slave_skip_counter=1;
+start slave;
+show slave status\G
+Query OK, 0 rows affected (0.09 sec)
+   
+   
+   
+   
+    
  
