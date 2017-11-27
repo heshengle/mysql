@@ -69,12 +69,15 @@ mysql>show master status;
 从服务器的配置基本与主库配置差不多，选择的从库服务器为：192.168.1.61
 1.配置从库服务my.cnf文件
 # vietc/my.cnf 对其进行如下修改：
-Server-id = 2 #这里ID改为2 因为主库为1;
-log-bin = mysql-bin  必填项，用于数据同步;
-master-host = 192.168.1.60 主库IP;
-master-user = test 同步用的账户;
-master-password = 123456 同步账户密码，主库时的设置;
-master-port = 3306 同步数据库的端口号。
+server-id=2
+master-host=192.168.1.111
+master-user=mstest      　　//第一步创建账号的用户名
+master-password=123456   //第一步创建账号的密码
+master-port=3306
+master-connect-retry=60
+replicate-do-db=mstest        //要同步的mstest数据库,要同步多个数据库，就多加几个replicate-db-db=数据库名
+replicate-ignore-db=mysql　 //要忽略的数据库　
+    
 2. 重启从库服务器
 #service mysqld restart
 如果重启失败则配置文件有问题，需重新检查配置。
