@@ -1,76 +1,44 @@
-（1）检查系统中是否已安装 MySQL。
+centos7下安装mysql5.6
+1. 下载
+直接用命令下载
+rpm -Uvh http://dev.mysql.com/get/mysql-community-release-el7-5.noarch.rpm
 
-rpm -qa | grep mysql
+1
 
+下载好后查看有那些mysql文件，使用命令yum repolist enabled | grep "mysql.*-community.*"
 
- 返回空值的话，就说明没有安装 MySQL 。
+2. 安装
+通过下面命令安装yum install mysql-community-server过程中直接点击Y就好直到出现
+Complete!
 
-注意：在新版本的CentOS7中，默认的数据库已更新为了Mariadb，而非 MySQL，所以执行 yum install mysql 命令只是更新Mariadb数据库，并不会安装 MySQL 。
+4
 
+3.基础信息配置
+首先启动mysql systemctl start mysqld当然也可以用service mysqld start
 
+5
 
-（2）查看已安装的 Mariadb 数据库版本。
+然后输入设置信息的命令
+mysql_secure_installation
 
-rpm -qa|grep -i mariadb
+6
 
+如果你是第一次进行这个设置，那么只需要进行回车就可以进行下一步的设置；如果你之前进行过设置，那么需要输入当前root用户的密码才可以进行下一步的操作
+那么就能看到如下的说明:
 
-（3）卸载已安装的 Mariadb 数据库。
+7
 
-rpm -qa|grep mariadb|xargs rpm -e --nodeps
+Set root password?[Y/N]中文意思:是否要设置root用户的密码 选择Y
+Remove anonymous users? [Y/n]中文意思:是否删除匿名用户 选择N
+Disallow root login remotely? [Y/n]中文意思:是否禁止root远程登录 选择N
+Remove test database and access to it? [Y/n]中文意思:是否删除database数据库 选择N
+Reload privilege tables now? [Y/n]中文意思:是否重新加载授权信息 选择Y
 
+设置成功
+当然想要远程还是要设置一下的
+GRANT ALL PRIVILEGES ON *.* TO 'root'@'%'IDENTIFIED BY 'password' WITH GRANT OPTION;
 
-（4）再次查看已安装的 Mariadb 数据库版本，确认是否卸载完成。
-
-rpm -qa|grep -i mariadb
-
-
- （5）下载安装包文件。
-
-wget http://repo.mysql.com/mysql-community-release-el7-5.noarch.rpm
-
-
-（6）安装mysql-community-release-el7-5.noarch.rpm包
-
-rpm -ivh mysql-community-release-el7-5.noarch.rpm
-
-
-安装完成之后，会在 /etc/yum.repos.d/ 目录下新增 mysql-community.repo 、mysql-community-source.repo 两个 yum 源文件。
-
-
-
-执行 yum repolist all | grep mysql 命令查看可用的 mysql 安装文件。
-
-
-
-（6）安装mysql。
-
-yum install mysql-server
+8
+FLUSH PRIVILEGES
 
 
-（7）检查mysql是否安装成功。
-
-rpm -qa | grep mysql
-
-
-（8）启动 mysql 服务 。
-
-systemctl start mysqld.service #启动 mysql
-systemctl restart mysqld.service #重启 mysql
-systemctl stop mysqld.service #停止 mysql
-systemctl enable mysqld.service #设置 mysql 开机启动
-（9）设置密码 。
-
-mysql5.6 安装完成后，它的 root 用户的密码默认是空的，我们需要及时用 mysql 的 root 用户登录（第一次直接回车，不用输入密码），并修改密码。
-
-# mysql -u root
-mysql> use mysql;
-mysql> update user set password=PASSWORD("这里输入root用户密码") where User='root';
-mysql> flush privileges; 
-
-
-（10）设置远程主机登录
-
-mysql> GRANT ALL PRIVILEGES ON *.* TO 'your username'@'%' IDENTIFIED BY 'your password';
-执行以下命令，为root 用户添加远程登录的能力。
-
-mysql> GRANT ALL PRIVILEGES ON *.* TO root@"%" IDENTIFIED BY "123456";
